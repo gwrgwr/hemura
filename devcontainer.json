@@ -1,0 +1,5 @@
+{
+  "name": "Hemura Container",
+  dockerComposeFile: "docker-compose.yaml",
+  service: "backend"
+}
