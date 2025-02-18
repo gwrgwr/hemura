@@ -64,6 +64,13 @@ public class UserEntity implements UserDetails {
         this.password = password;
     }
 
+    public UserEntity(String name, String finalName, String email) {
+        this.name = name;
+        this.finalName = finalName;
+        this.email = email;
+        this.password = null;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         if (Objects.equals(role.getRole(), "admin")) {

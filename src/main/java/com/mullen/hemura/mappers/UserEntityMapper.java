@@ -11,6 +11,10 @@ public class UserEntityMapper {
         return new UserEntity(createUserEntityDTO.name(), createUserEntityDTO.lastName(), createUserEntityDTO.email(), encodedPassword);
     }
 
+    public static UserEntity toUserEntity(UpdateUserDTO updateUserDTO) {
+        return new UserEntity(updateUserDTO.name(), updateUserDTO.lastName(), updateUserDTO.email());
+    }
+
     public static UserEntityResponseDTO toEntityResponseDTO(UserEntity userEntity) {
         return new UserEntityResponseDTO(userEntity.getId(), userEntity.getName(), userEntity.getFinalName(), userEntity.getEmail());
     }

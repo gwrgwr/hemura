@@ -3,6 +3,7 @@ package com.mullen.hemura.controllers;
 import com.mullen.hemura.domain.user.UserEntity;
 import com.mullen.hemura.domain.user.dto.request.CreateUserEntityDTO;
 import com.mullen.hemura.domain.user.dto.request.LoginUserEntityDTO;
+import com.mullen.hemura.domain.user.dto.request.UpdateUserDTO;
 import com.mullen.hemura.domain.user.dto.response.LoggedUserEntityDTO;
 import com.mullen.hemura.domain.user.dto.response.UserEntityResponseDTO;
 import com.mullen.hemura.services.AuthServices;
@@ -51,8 +52,8 @@ public class UserEntityController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserEntityResponseDTO> update(@PathVariable String id, @RequestBody CreateUserEntityDTO createUserEntityDTO) {
-        return ResponseEntity.status(HttpStatus.OK).body(this.userEntityServices.update(id, createUserEntityDTO));
+    public ResponseEntity<UserEntityResponseDTO> update(@PathVariable String id, @RequestBody UpdateUserDTO updateUserDTO) {
+        return ResponseEntity.status(HttpStatus.OK).body(this.userEntityServices.update(id, updateUserDTO));
     }
 
     @DeleteMapping("/{id}")
@@ -60,5 +61,4 @@ public class UserEntityController {
         this.userEntityServices.deleteById(id);
         return ResponseEntity.noContent().build();
     }
-
 }

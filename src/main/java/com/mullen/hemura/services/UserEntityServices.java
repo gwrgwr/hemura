@@ -2,6 +2,7 @@ package com.mullen.hemura.services;
 
 import com.mullen.hemura.domain.user.UserEntity;
 import com.mullen.hemura.domain.user.dto.request.CreateUserEntityDTO;
+import com.mullen.hemura.domain.user.dto.request.UpdateUserDTO;
 import com.mullen.hemura.domain.user.dto.response.UserEntityResponseDTO;
 import com.mullen.hemura.mappers.UserEntityMapper;
 import com.mullen.hemura.repositories.UserEntityRepository;
@@ -38,9 +39,9 @@ public class UserEntityServices {
         return UserEntityMapper.toEntityResponseDTO(this.userEntityRepository.save(UserEntityMapper.toUserEntity(createUserEntityDTO, encodedPassword)));
     }
 
-    public UserEntityResponseDTO update(String id, CreateUserEntityDTO createUserEntityDTO) {
+    public UserEntityResponseDTO update(String id, UpdateUserDTO updateUserDTO) {
         UserEntity userEntity = this.getById(id);
-        ReflectionUpdate.updateEntitiesFields(userEntity, createUserEntityDTO);
+        ReflectionUpdate.updateEntitiesFields(userEntity, UserEntityMapper.toUserEntity(updateUserDTO));
         return UserEntityMapper.toEntityResponseDTO(this.userEntityRepository.save(userEntity));
     }
 
