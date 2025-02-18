@@ -25,6 +25,10 @@ public class SessionService {
         return code.toString();
     }
 
+    public List<SessionEntity> getAll() {
+        return this.sessionRepository.findAll();
+    }
+
     public SessionService(SessionRepository sessionRepository, UserEntityServices userService) {
         this.sessionRepository = sessionRepository;
         this.userService = userService;
@@ -50,9 +54,9 @@ public class SessionService {
         return sessionRepository.save(session);
     }
 
-    public SessionEntity removeUserFromSession(String userId, String code) {
+    public SessionEntity removeUserFromSession(String userId) {
         UserEntity user = userService.getById(userId);
-        SessionEntity session = getByCode(code);
+        SessionEntity session = user.getSession();
         session.getUsers().remove(user);
         return sessionRepository.save(session);
     }
