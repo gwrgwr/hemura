@@ -1,7 +1,7 @@
 package com.mullen.hemura.services;
 
 import com.mullen.hemura.domain.user.UserEntity;
-import com.mullen.hemura.domain.user.dto.request.CreateUserEntityDTO;
+import com.mullen.hemura.domain.user.dto.request.UserEntityRequestDTO;
 import com.mullen.hemura.domain.user.dto.request.UpdateUserDTO;
 import com.mullen.hemura.domain.user.dto.response.UserEntityResponseDTO;
 import com.mullen.hemura.mappers.UserEntityMapper;
@@ -34,18 +34,29 @@ public class UserEntityServices {
         return this.userEntityRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
     }
 
-    public UserEntityResponseDTO save(CreateUserEntityDTO createUserEntityDTO) {
-        String encodedPassword = bCryptPasswordEncoder.encode(createUserEntityDTO.password());
-        return UserEntityMapper.toEntityResponseDTO(this.userEntityRepository.save(UserEntityMapper.toUserEntity(createUserEntityDTO, encodedPassword)));
+    public UserEntityResponseDTO save(UserEntityRequestDTO userEntityRequestDTO) {
+        String encodedPassword = bCryptPasswordEncoder.encode(userEntityRequestDTO.password());
+        return UserEntityMapper.toEntityResponseDTO(this.userEntityRepository.save(UserEntityMapper.toUserEntity(userEntityRequestDTO, encodedPassword)));
     }
 
     public UserEntityResponseDTO update(String id, UpdateUserDTO updateUserDTO) {
         UserEntity userEntity = this.getById(id);
-        ReflectionUpdate.updateEntitiesFields(userEntity, UserEntityMapper.toUserEntity(updateUserDTO));
+        if (updateUserDTO.email() != null) {
+            userEntity.setEmail(updateUserDTO.email());
+        }
+
+        if (updateUserDTO.name() != null) {
+            userEntity.setName(updateUserDTO.name());
+        }
+
+        if (updateUserDTO.email() != null) {
+            userEntity.setEmail(updateUserDTO.email());
+        }
         return UserEntityMapper.toEntityResponseDTO(this.userEntityRepository.save(userEntity));
     }
 
     public void deleteById(String id) {
         this.userEntityRepository.delete(this.userEntityRepository.getReferenceById(id));
     }
+
 }

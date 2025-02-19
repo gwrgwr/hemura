@@ -1,7 +1,7 @@
 package com.mullen.hemura.controllers;
 
 import com.mullen.hemura.domain.user.UserEntity;
-import com.mullen.hemura.domain.user.dto.request.CreateUserEntityDTO;
+import com.mullen.hemura.domain.user.dto.request.UserEntityRequestDTO;
 import com.mullen.hemura.domain.user.dto.request.LoginUserEntityDTO;
 import com.mullen.hemura.domain.user.dto.request.UpdateUserDTO;
 import com.mullen.hemura.domain.user.dto.response.LoggedUserEntityDTO;
@@ -10,7 +10,6 @@ import com.mullen.hemura.services.AuthServices;
 import com.mullen.hemura.services.UserEntityServices;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -38,8 +37,8 @@ public class UserEntityController {
     }
 
     @PostMapping
-    public ResponseEntity<UserEntityResponseDTO> save(@RequestBody CreateUserEntityDTO createUserEntityDTO) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(this.userEntityServices.save(createUserEntityDTO));
+    public ResponseEntity<UserEntityResponseDTO> save(@RequestBody UserEntityRequestDTO userEntityRequestDTO) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(this.userEntityServices.save(userEntityRequestDTO));
     }
 
     @PostMapping("/login")

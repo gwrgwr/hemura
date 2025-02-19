@@ -44,12 +44,12 @@ public class UserEntity implements UserDetails {
     private Role role;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="session_id")
     private SessionEntity session;
 
     @PrePersist
     public void prePersist() {
         this.createdAt = LocalDateTime.now();
-        this.role = Role.USER;
     }
 
     @PostUpdate
@@ -57,18 +57,18 @@ public class UserEntity implements UserDetails {
         this.updatedAt = LocalDateTime.now();
     }
 
-    public UserEntity(String name, String finalName, String email, String password) {
+    public UserEntity(String name, String finalName, String email, String password, Role role) {
         this.name = name;
         this.finalName = finalName;
         this.email = email;
         this.password = password;
+        this.role = role;
     }
 
     public UserEntity(String name, String finalName, String email) {
         this.name = name;
         this.finalName = finalName;
         this.email = email;
-        this.password = null;
     }
 
     @Override

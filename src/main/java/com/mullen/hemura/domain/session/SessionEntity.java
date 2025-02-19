@@ -17,13 +17,14 @@ import java.util.List;
 public class SessionEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "session_id")
     private String id;
 
     private String name;
 
     private String code;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "session")
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "session", fetch = FetchType.EAGER)
     private List<UserEntity> users;
 
     public SessionEntity(String name, String code, List<UserEntity> users) {

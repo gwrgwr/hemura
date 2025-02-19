@@ -28,6 +28,6 @@ public class AuthServices {
             throw new Exception("Invalid Credentials");
         }
         String token = tokenService.generateToken(userEntity);
-        return UserEntityMapper.toLoggedUserEntityDTO(token, userEntity);
+        return UserEntityMapper.toLoggedUserEntityDTO(token, userEntity, userEntity.getSession());
     }
 }

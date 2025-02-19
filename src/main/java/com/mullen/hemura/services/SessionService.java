@@ -1,8 +1,13 @@
 package com.mullen.hemura.services;
 
 import com.mullen.hemura.domain.session.SessionEntity;
+import com.mullen.hemura.domain.session.dto.response.SessionResponseDTO;
 import com.mullen.hemura.domain.user.UserEntity;
+import com.mullen.hemura.domain.user.dto.response.UserEntityResponseDTO;
+import com.mullen.hemura.mappers.SessionEntityMapper;
+import com.mullen.hemura.mappers.UserEntityMapper;
 import com.mullen.hemura.repositories.SessionRepository;
+import com.mullen.hemura.repositories.UserEntityRepository;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
@@ -12,7 +17,13 @@ import java.util.List;
 @Service
 public class SessionService {
     private final SessionRepository sessionRepository;
-    private final UserEntityServices userService;
+    private final UserEntityRepository userEntityRepository;
+
+    public SessionService(SessionRepository sessionRepository, UserEntityRepository userEntityRepository) {
+        this.sessionRepository = sessionRepository;
+        this.userEntityRepository = userEntityRepository;
+    }
+
 
     private final SecureRandom random = new SecureRandom();
 
@@ -25,43 +36,67 @@ public class SessionService {
         return code.toString();
     }
 
-    public List<SessionEntity> getAll() {
-        return this.sessionRepository.findAll();
+    public List<SessionResponseDTO> getAll() {
+        List<SessionResponseDTO> sessionResponseDTOList = new ArrayList<>();
+        for (SessionEntity sessionEntity : sessionRepository.findAll()) {
+            sessionResponseDTOList.add(SessionEntityMapper.toResponseDTO(sessionEntity));
+        }
+        return sessionResponseDTOList;
     }
 
-    public SessionService(SessionRepository sessionRepository, UserEntityServices userService) {
-        this.sessionRepository = sessionRepository;
-        this.userService = userService;
+    public SessionResponseDTO getSessionByUser(String userId) {
+        UserEntity userEntity = this.userEntityRepository.getReferenceById(userId);
+        SessionEntity session = this.sessionRepository.findFirstByUsersContains(userEntity).orElseThrow(() -> new RuntimeException("Session not found"));
+        List<UserEntityResponseDTO> users = new ArrayList<>();
+        return SessionEntityMapper.toResponseDTO(session);
     }
 
-    public SessionEntity save(String userId, String sessionName) {
-        UserEntity user = userService.getById(userId);
+    public SessionResponseDTO save(String userId, String sessionName) {
+        UserEntity user = this.userEntityRepository.getReferenceById(userId);
         List<UserEntity> users = new ArrayList<>();
         users.add(user);
         String code = generateCode(6);
         SessionEntity session = new SessionEntity(sessionName, code, users);
-        return sessionRepository.save(session);
+        user.setSession(session);
+        this.sessionRepository.save(session);
+        this.userEntityRepository.saveAndFlush(user);
+        return SessionEntityMapper.toResponseDTO(session);
     }
 
     public SessionEntity getByCode(String code) {
         return sessionRepository.findByCode(code).orElseThrow(() -> new RuntimeException("Session not found"));
     }
 
-    public SessionEntity addUserToSession(String userId, String code) {
-        UserEntity user = userService.getById(userId);
+    public SessionResponseDTO addUserToSession(String userId, String code) {
+        UserEntity user = this.userEntityRepository.getReferenceById(userId);
         SessionEntity session = getByCode(code);
         session.getUsers().add(user);
-        return sessionRepository.save(session);
+        user.setSession(session);
+        this.sessionRepository.save(session);
+        this.userEntityRepository.saveAndFlush(user);
+        return SessionEntityMapper.toResponseDTO(session);
     }
 
-    public SessionEntity removeUserFromSession(String userId) {
-        UserEntity user = userService.getById(userId);
+    public void removeUserFromSession(String userId) {
+        UserEntity user = this.userEntityRepository.getReferenceById(userId);
         SessionEntity session = user.getSession();
         session.getUsers().remove(user);
-        return sessionRepository.save(session);
+        user.setSession(null);
+        this.sessionRepository.save(session);
+        this.userEntityRepository.saveAndFlush(user);
+
     }
 
-    public void deleteSession(String code) {
-        sessionRepository.delete(getByCode(code));
+    public void deleteSession(String sessionId) {
+        SessionEntity session = this.sessionRepository.getReferenceById(sessionId);
+        if (session != null) {
+            for (UserEntity user : session.getUsers()) {
+                user.setSession(null);
+                this.userEntityRepository.saveAndFlush(user);
+            }
+            this.sessionRepository.delete(session);
+        } else {
+            throw new RuntimeException("Session not found");
+        }
     }
 }
