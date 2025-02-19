@@ -25,23 +25,16 @@ public class SessionService {
     }
 
 
-    private final SecureRandom random = new SecureRandom();
-
-    public String generateCode(int length) {
-        StringBuilder code = new StringBuilder(length);
-        for (int i = 0; i < length; i++) {
-            String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-            code.append(characters.charAt(random.nextInt(characters.length())));
-        }
-        return code.toString();
-    }
-
     public List<SessionResponseDTO> getAll() {
         List<SessionResponseDTO> sessionResponseDTOList = new ArrayList<>();
         for (SessionEntity sessionEntity : sessionRepository.findAll()) {
             sessionResponseDTOList.add(SessionEntityMapper.toResponseDTO(sessionEntity));
         }
         return sessionResponseDTOList;
+    }
+
+    public SessionEntity getById(String sessionId) {
+        return this.sessionRepository.findById(sessionId).orElseThrow(() -> new RuntimeException("Session not found"));
     }
 
     public SessionResponseDTO getSessionByUser(String userId) {
@@ -98,5 +91,16 @@ public class SessionService {
         } else {
             throw new RuntimeException("Session not found");
         }
+    }
+
+    private final SecureRandom random = new SecureRandom();
+
+    public String generateCode(int length) {
+        StringBuilder code = new StringBuilder(length);
+        for (int i = 0; i < length; i++) {
+            String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            code.append(characters.charAt(random.nextInt(characters.length())));
+        }
+        return code.toString();
     }
 }

@@ -1,26 +1,62 @@
 package com.mullen.hemura.domain.tasks;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.mullen.hemura.domain.session.SessionEntity;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import java.sql.Time;
-import java.util.Date;
+import java.time.DayOfWeek;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 @Entity
+@Setter
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class TaskEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "task_id")
     private String id;
 
+    @NotNull
     private String title;
 
+    @NotNull
     private String description;
 
-    private boolean completed;
+    @NotNull
+    private Boolean isCompleted;
 
-    private Date weekDay;
+    @Enumerated(EnumType.STRING)
+    private DayOfWeek weekDay;
 
-    private Time time;
+    @NotNull
+    @JsonFormat(pattern = "HH:mm")
+    private LocalTime time;
+
+    @PrePersist
+    public void prePersist() {
+        this.isCompleted = false;
+        var formatter = DateTimeFormatter.ofPattern("HH:mm");
+        this.time = LocalTime.parse(this.time.toString(), formatter);
+    }
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name="session_id")
+    private SessionEntity session;
+
+    public TaskEntity(String title, String description, DayOfWeek weekDay, LocalTime time, SessionEntity session) {
+        this.title = title;
+        this.description = description;
+        this.weekDay = weekDay;
+        this.time = time;
+        this.session = session;
+    }
+
 }

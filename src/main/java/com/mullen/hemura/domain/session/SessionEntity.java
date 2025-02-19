@@ -1,5 +1,6 @@
 package com.mullen.hemura.domain.session;
 
+import com.mullen.hemura.domain.tasks.TaskEntity;
 import com.mullen.hemura.domain.user.UserEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -26,6 +27,9 @@ public class SessionEntity {
 
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "session", fetch = FetchType.EAGER)
     private List<UserEntity> users;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "session", fetch = FetchType.EAGER)
+    private List<TaskEntity> tasks;
 
     public SessionEntity(String name, String code, List<UserEntity> users) {
         this.name = name;

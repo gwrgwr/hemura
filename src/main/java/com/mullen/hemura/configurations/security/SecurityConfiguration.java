@@ -61,6 +61,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/user", "/api/v1/user/login").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/user").permitAll()
                         .anyRequest().hasAnyAuthority("SCOPE_USER"))
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)

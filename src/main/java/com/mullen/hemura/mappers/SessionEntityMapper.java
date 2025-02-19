@@ -15,6 +15,6 @@ public class SessionEntityMapper {
         for (UserEntity userEntity : users) {
             userEntityResponseDTOList.add(UserEntityMapper.toEntityResponseDTO(userEntity));
         }
-        return new SessionResponseDTO(sessionEntity.getId(), sessionEntity.getName(), sessionEntity.getCode(), userEntityResponseDTOList);
+        return new SessionResponseDTO(sessionEntity.getId(), sessionEntity.getName(), sessionEntity.getCode(), userEntityResponseDTOList, sessionEntity.getTasks());
     }
 }
