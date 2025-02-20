@@ -2,6 +2,7 @@ package com.mullen.hemura.mappers;
 
 import com.mullen.hemura.domain.session.SessionEntity;
 import com.mullen.hemura.domain.session.dto.response.SessionResponseDTO;
+import com.mullen.hemura.domain.tasks.dto.response.TaskResponseDTO;
 import com.mullen.hemura.domain.user.UserEntity;
 import com.mullen.hemura.domain.user.dto.response.UserEntityResponseDTO;
 
@@ -15,6 +16,12 @@ public class SessionEntityMapper {
         for (UserEntity userEntity : users) {
             userEntityResponseDTOList.add(UserEntityMapper.toEntityResponseDTO(userEntity));
         }
-        return new SessionResponseDTO(sessionEntity.getId(), sessionEntity.getName(), sessionEntity.getCode(), userEntityResponseDTOList, sessionEntity.getTasks());
+        List<TaskResponseDTO> tasks;
+        if (sessionEntity.getTasks() != null) {
+            tasks = TaskEntityMapper.toTaskListResponseDTO(sessionEntity.getTasks());
+        } else {
+            tasks = null;
+        }
+        return new SessionResponseDTO(sessionEntity.getId(), sessionEntity.getName(), sessionEntity.getCode(), userEntityResponseDTOList, tasks);
     }
 }

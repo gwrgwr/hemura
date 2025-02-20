@@ -8,6 +8,8 @@ import com.mullen.hemura.mappers.TaskEntityMapper;
 import com.mullen.hemura.repositories.TaskEntityRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class TaskEntityService {
     private final TaskEntityRepository taskEntityRepository;
@@ -22,5 +24,9 @@ public class TaskEntityService {
         SessionEntity session = this.sessionService.getById(sessionId);
         TaskEntity task = TaskEntityMapper.toEntity(taskRequestDTO, session);
         return TaskEntityMapper.toTaskResponseDTO(this.taskEntityRepository.save(task));
+    }
+
+    public List<TaskResponseDTO> getTasks(String sessionId) {
+        return TaskEntityMapper.toTaskListResponseDTO(this.taskEntityRepository.findAllBySession_Id((sessionId)).orElseThrow(() -> new RuntimeException("Tasks not found")));
     }
 }
