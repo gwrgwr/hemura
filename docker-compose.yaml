@@ -12,8 +12,6 @@ services:
       - /home/ninho/IdeaProjects/hemura:/app
 
 
-  version: '3.8'
-
   mongo:
     image: mongo:latest
     container_name: mongodb
