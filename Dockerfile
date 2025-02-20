@@ -4,6 +4,7 @@ COPY pom.xml .
 COPY src ./src
 RUN mvn clean package -DskipTests
 FROM openjdk:17
+RUN microdnf install -y git
 WORKDIR /app
 COPY --from=build /app/target/hemura-0.0.1-SNAPSHOT.jar .
 EXPOSE 8080:8080

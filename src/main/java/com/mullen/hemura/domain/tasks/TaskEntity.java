@@ -1,6 +1,7 @@
 package com.mullen.hemura.domain.tasks;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mullen.hemura.domain.session.SessionEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;

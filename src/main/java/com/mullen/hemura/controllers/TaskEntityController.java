@@ -1,5 +1,6 @@
 package com.mullen.hemura.controllers;
 
+import com.mullen.hemura.domain.tasks.TaskEntity;
 import com.mullen.hemura.domain.tasks.dto.request.TaskRequestDTO;
 import com.mullen.hemura.domain.tasks.dto.response.TaskResponseDTO;
 import com.mullen.hemura.services.TaskEntityService;
@@ -22,8 +23,23 @@ public class TaskEntityController {
         return this.taskEntityService.getTasks(sessionId);
     }
 
+    @GetMapping("/sessionId/{sessionId}/taskId/{taskId}")
+    public TaskEntity getTask(@PathVariable String sessionId, @PathVariable String taskId) {
+        return this.taskEntityService.getTask(taskId, sessionId);
+    }
+
     @PostMapping("/sessionId/{sessionId}")
     public TaskResponseDTO createTask(@PathVariable String sessionId, @RequestBody TaskRequestDTO taskRequestDTO) {
         return this.taskEntityService.save(taskRequestDTO, sessionId);
+    }
+
+    @PutMapping("/sessionId/{sessionId}/taskId/{taskId}")
+    public TaskResponseDTO updateTask(@PathVariable String sessionId, @PathVariable String taskId, @RequestBody TaskRequestDTO taskRequestDTO) {
+        return this.taskEntityService.update(taskId, sessionId, taskRequestDTO);
+    }
+
+    @DeleteMapping("/sessionId/{sessionId}/taskId/{taskId}")
+    public void deleteTask(@PathVariable String sessionId, @PathVariable String taskId) {
+        this.taskEntityService.delete(taskId, sessionId);
     }
 }

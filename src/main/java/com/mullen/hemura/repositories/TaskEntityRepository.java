@@ -11,4 +11,5 @@ import java.util.Optional;
 @Repository
 public interface TaskEntityRepository extends JpaRepository<TaskEntity, String> {
     Optional<List<TaskEntity>> findAllBySession_Id(String sessionId);
+    Optional<TaskEntity> findByIdAndSession_Id(String taskId, String sessionId);
 }

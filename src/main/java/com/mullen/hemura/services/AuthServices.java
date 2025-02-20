@@ -3,6 +3,7 @@ package com.mullen.hemura.services;
 import com.mullen.hemura.domain.user.UserEntity;
 import com.mullen.hemura.domain.user.dto.request.LoginUserEntityDTO;
 import com.mullen.hemura.domain.user.dto.response.LoggedUserEntityDTO;
+import com.mullen.hemura.exceptions.user.UserNotFoundException;
 import com.mullen.hemura.mappers.UserEntityMapper;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -24,6 +25,9 @@ public class AuthServices {
 
     public LoggedUserEntityDTO loginUserEntity(LoginUserEntityDTO loginUserEntityDTO) throws Exception{
         UserEntity userEntity = this.userEntityServices.getByEmail(loginUserEntityDTO.email());
+        if (userEntity == null) {
+            throw new UserNotFoundException();
+        }
         if (!bCryptPasswordEncoder.matches(loginUserEntityDTO.password(), userEntity.getPassword())) {
             throw new Exception("Invalid Credentials");
         }

@@ -4,6 +4,8 @@ import com.mullen.hemura.domain.user.UserEntity;
 import com.mullen.hemura.domain.user.dto.request.UserEntityRequestDTO;
 import com.mullen.hemura.domain.user.dto.request.UpdateUserDTO;
 import com.mullen.hemura.domain.user.dto.response.UserEntityResponseDTO;
+import com.mullen.hemura.exceptions.user.UserAlreadyExistsException;
+import com.mullen.hemura.exceptions.user.UserNotFoundException;
 import com.mullen.hemura.mappers.UserEntityMapper;
 import com.mullen.hemura.repositories.UserEntityRepository;
 import com.mullen.hemura.utils.ReflectionUpdate;
@@ -27,7 +29,7 @@ public class UserEntityServices {
     }
 
     public UserEntity getByEmail(String email) {
-        return this.userEntityRepository.getByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+        return this.userEntityRepository.getByEmail(email).orElse(null);
     }
 
     public UserEntity getById(String id) {
@@ -36,6 +38,10 @@ public class UserEntityServices {
 
     public UserEntityResponseDTO save(UserEntityRequestDTO userEntityRequestDTO) {
         String encodedPassword = bCryptPasswordEncoder.encode(userEntityRequestDTO.password());
+        UserEntity userEntity = this.getByEmail(userEntityRequestDTO.email());
+        if (userEntity != null) {
+            throw new UserAlreadyExistsException();
+        }
         return UserEntityMapper.toEntityResponseDTO(this.userEntityRepository.save(UserEntityMapper.toUserEntity(userEntityRequestDTO, encodedPassword)));
     }
 

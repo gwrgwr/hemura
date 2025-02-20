@@ -1,5 +1,7 @@
 package com.mullen.hemura.domain.session;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.mullen.hemura.domain.tasks.TaskEntity;
 import com.mullen.hemura.domain.user.UserEntity;
 import jakarta.persistence.*;
@@ -15,6 +17,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class SessionEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -26,9 +29,11 @@ public class SessionEntity {
     private String code;
 
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "session", fetch = FetchType.EAGER)
+    @JsonIgnore
     private List<UserEntity> users;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "session", fetch = FetchType.EAGER)
+    @JsonIgnore
     private List<TaskEntity> tasks;
 
     public SessionEntity(String name, String code, List<UserEntity> users) {

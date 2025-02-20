@@ -4,6 +4,7 @@ import com.mullen.hemura.domain.session.SessionEntity;
 import com.mullen.hemura.domain.session.dto.response.SessionResponseDTO;
 import com.mullen.hemura.domain.user.UserEntity;
 import com.mullen.hemura.domain.user.dto.response.UserEntityResponseDTO;
+import com.mullen.hemura.exceptions.session.SessionNotFoundException;
 import com.mullen.hemura.mappers.SessionEntityMapper;
 import com.mullen.hemura.mappers.UserEntityMapper;
 import com.mullen.hemura.repositories.SessionRepository;
@@ -34,12 +35,12 @@ public class SessionService {
     }
 
     public SessionEntity getById(String sessionId) {
-        return this.sessionRepository.findById(sessionId).orElseThrow(() -> new RuntimeException("Session not found"));
+        return this.sessionRepository.findById(sessionId).orElseThrow(SessionNotFoundException::new);
     }
 
     public SessionResponseDTO getSessionByUser(String userId) {
         UserEntity userEntity = this.userEntityRepository.getReferenceById(userId);
-        SessionEntity session = this.sessionRepository.findFirstByUsersContains(userEntity).orElseThrow(() -> new RuntimeException("Session not found"));
+        SessionEntity session = this.sessionRepository.findFirstByUsersContains(userEntity).orElseThrow(SessionNotFoundException::new);
         List<UserEntityResponseDTO> users = new ArrayList<>();
         return SessionEntityMapper.toResponseDTO(session);
     }
@@ -57,7 +58,7 @@ public class SessionService {
     }
 
     public SessionEntity getByCode(String code) {
-        return sessionRepository.findByCode(code).orElseThrow(() -> new RuntimeException("Session not found"));
+        return sessionRepository.findByCode(code).orElseThrow(SessionNotFoundException::new);
     }
 
     public SessionResponseDTO addUserToSession(String userId, String code) {
@@ -89,7 +90,7 @@ public class SessionService {
             }
             this.sessionRepository.delete(session);
         } else {
-            throw new RuntimeException("Session not found");
+            throw new SessionNotFoundException();
         }
     }
 
