@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -30,6 +31,10 @@ public class TaskEntityService {
 
     public List<TaskResponseDTO> getTasks(String sessionId) {
         return TaskEntityMapper.toTaskListResponseDTO(this.taskEntityRepository.findAllBySession_Id((sessionId)).orElseThrow(() -> new RuntimeException("Tasks not found")));
+    }
+
+    public List<TaskResponseDTO> getTaskByWeekDay(String sessionId, String weekDay) {
+        return TaskEntityMapper.toTaskListResponseDTO(this.taskEntityRepository.findAllBySession_IdAndWeekDay(sessionId, weekDay).orElse(new ArrayList<>()));
     }
 
     public TaskEntity getTask(String taskId, String sessionId) {

@@ -28,6 +28,11 @@ public class TaskEntityController {
         return this.taskEntityService.getTask(taskId, sessionId);
     }
 
+    @GetMapping("/sessionId/{sessionId}/weekday/{weekday}")
+    public List<TaskResponseDTO> getTasksByWeekday(@PathVariable String sessionId, @PathVariable String weekday) {
+        return this.taskEntityService.getTaskByWeekDay(sessionId, weekday);
+    }
+
     @PostMapping("/sessionId/{sessionId}")
     public TaskResponseDTO createTask(@PathVariable String sessionId, @RequestBody TaskRequestDTO taskRequestDTO) {
         return this.taskEntityService.save(taskRequestDTO, sessionId);

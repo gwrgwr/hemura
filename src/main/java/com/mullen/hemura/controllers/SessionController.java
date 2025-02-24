@@ -3,6 +3,8 @@ package com.mullen.hemura.controllers;
 import com.mullen.hemura.domain.session.SessionEntity;
 import com.mullen.hemura.domain.session.dto.response.SessionResponseDTO;
 import com.mullen.hemura.services.SessionService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,8 +34,8 @@ public class SessionController {
     }
 
     @PostMapping("userId/{userId}")
-    public SessionResponseDTO createSession(@PathVariable String userId, @RequestBody String sessionName) {
-        return sessionService.save(userId, sessionName);
+    public ResponseEntity<SessionResponseDTO> createSession(@PathVariable String userId, @RequestBody String sessionName) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(sessionService.save(userId, sessionName));
     }
 
     @PutMapping("userId/{userId}/{code}")

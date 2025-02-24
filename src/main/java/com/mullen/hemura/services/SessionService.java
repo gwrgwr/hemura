@@ -41,7 +41,6 @@ public class SessionService {
     public SessionResponseDTO getSessionByUser(String userId) {
         UserEntity userEntity = this.userEntityRepository.getReferenceById(userId);
         SessionEntity session = this.sessionRepository.findFirstByUsersContains(userEntity).orElseThrow(SessionNotFoundException::new);
-        List<UserEntityResponseDTO> users = new ArrayList<>();
         return SessionEntityMapper.toResponseDTO(session);
     }
 
