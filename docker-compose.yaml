@@ -11,6 +11,35 @@ services:
     volumes:
       - /home/ninho/IdeaProjects/hemura:/app
 
+
+  mongo:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - dbs
+
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: 12345678
+      POSTGRES_DB: hemura
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - dbs
+
+volumes:
+  mongo_data:
+  postgres_data:
+
 networks:
     dbs:
-        external: true
+        driver: bridge
