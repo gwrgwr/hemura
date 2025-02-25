@@ -8,6 +8,7 @@ import com.mullen.hemura.mappers.TaskEntityMapper;
 import com.mullen.hemura.repositories.TaskEntityRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -34,7 +35,7 @@ public class TaskEntityService {
     }
 
     public List<TaskResponseDTO> getTaskByWeekDay(String sessionId, String weekDay) {
-        return TaskEntityMapper.toTaskListResponseDTO(this.taskEntityRepository.findAllBySession_IdAndWeekDay(sessionId, weekDay).orElse(new ArrayList<>()));
+        return TaskEntityMapper.toTaskListResponseDTO(this.taskEntityRepository.findAllBySession_IdAndWeekDay(sessionId, DayOfWeek.valueOf(weekDay)).orElse(new ArrayList<>()));
     }
 
     public TaskEntity getTask(String taskId, String sessionId) {
@@ -55,7 +56,7 @@ public class TaskEntityService {
             task.setTime(time);
         }
         if (taskRequestDTO.weekDay() != null) {
-            task.setWeekDay(taskRequestDTO.weekDay());
+            task.setWeekDay(DayOfWeek.valueOf(taskRequestDTO.weekDay()));
         }
         return TaskEntityMapper.toTaskResponseDTO(this.taskEntityRepository.save(task));
     }

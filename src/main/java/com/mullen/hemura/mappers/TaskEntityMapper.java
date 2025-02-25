@@ -5,6 +5,7 @@ import com.mullen.hemura.domain.tasks.TaskEntity;
 import com.mullen.hemura.domain.tasks.dto.request.TaskRequestDTO;
 import com.mullen.hemura.domain.tasks.dto.response.TaskResponseDTO;
 
+import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +13,8 @@ import java.util.List;
 public class TaskEntityMapper {
     public static TaskEntity toEntity (TaskRequestDTO taskRequestDTO, SessionEntity sessionEntity) {
         LocalTime time = LocalTime.parse(taskRequestDTO.time());
-        return new TaskEntity(taskRequestDTO.title(), taskRequestDTO.description(), taskRequestDTO.weekDay(), time, sessionEntity);
+        DayOfWeek dayOfWeek = DayOfWeek.valueOf(taskRequestDTO.weekDay());
+        return new TaskEntity(taskRequestDTO.title(), taskRequestDTO.description(), dayOfWeek, time, sessionEntity);
     }
 
     public static TaskResponseDTO toTaskResponseDTO (TaskEntity taskEntity) {

@@ -4,6 +4,8 @@ import com.mullen.hemura.domain.tasks.TaskEntity;
 import com.mullen.hemura.domain.tasks.dto.request.TaskRequestDTO;
 import com.mullen.hemura.domain.tasks.dto.response.TaskResponseDTO;
 import com.mullen.hemura.services.TaskEntityService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,8 +36,8 @@ public class TaskEntityController {
     }
 
     @PostMapping("/sessionId/{sessionId}")
-    public TaskResponseDTO createTask(@PathVariable String sessionId, @RequestBody TaskRequestDTO taskRequestDTO) {
-        return this.taskEntityService.save(taskRequestDTO, sessionId);
+    public ResponseEntity<TaskResponseDTO> createTask(@PathVariable String sessionId, @RequestBody TaskRequestDTO taskRequestDTO) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(this.taskEntityService.save(taskRequestDTO, sessionId));
     }
 
     @PutMapping("/sessionId/{sessionId}/taskId/{taskId}")
